@@ -1,4 +1,4 @@
-package com.hhl.rpc.rpc-registry;
+package com.hhl.rpc.registry;
 
 public class Main {
     public static void main(String[] args) {
