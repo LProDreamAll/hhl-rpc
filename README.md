@@ -75,7 +75,7 @@ public interface ServiceLoadBalancer<T> {
 - 启动 Zookeeper 服务器：zkServer start
 - 启动 rpc-provider 模块 RpcProviderApplication
 - 启动 rpc-consumer 模块 RpcConsumerApplication
-- 测试：浏览器输入 http://localhost:8080/hello，成功返回 hellomini rpc
+- 测试：浏览器输入 http://localhost:8080/hello，成功返回 hello hhl rpc
 
 ## 支持etcd
  todo 待开发

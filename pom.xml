@@ -11,12 +11,10 @@
     <modules>
         <module>rpc-provider</module>
         <module>rpc-consumer</module>
-        <module>rpc-core</module>
+        <module>rpc-common</module>
         <module>rpc-registry</module>
         <module>rpc-facade</module>
-        <module>rpc-registry</module>
         <module>rpc-test</module>
-        <module>rpc-facade</module>
         <module>rpc-protocol</module>
 
     </modules>
@@ -36,37 +34,38 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.mini.rpc</groupId>
+                <groupId>com.hhl.rpc</groupId>
                 <artifactId>rpc-consumer</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.mini.rpc</groupId>
+                <groupId>com.hhl.rpc</groupId>
                 <artifactId>rpc-provider</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.mini.rpc</groupId>
+                <groupId>com.hhl.rpc</groupId>
                 <artifactId>rpc-registry</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.mini.rpc</groupId>
-                <artifactId>rpc-core</artifactId>
+                <groupId>com.hhl.rpc</groupId>
+                <artifactId>rpc-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.mini.rpc</groupId>
+                <groupId>com.hhl.rpc</groupId>
                 <artifactId>rpc-protocol</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.mini.rpc</groupId>
+                <groupId>com.hhl.rpc</groupId>
                 <artifactId>rpc-facade</artifactId>
                 <version>${project.version}</version>
             </dependency>
+
             <dependency>
-                <groupId>com.mini.rpc</groupId>
+                <groupId>com.hhl.rpc</groupId>
                 <artifactId>rpc-test</artifactId>
                 <version>${project.version}</version>
             </dependency>
