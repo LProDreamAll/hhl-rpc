@@ -64,10 +64,6 @@ public interface ServiceLoadBalancer<T> {
 
 ## 环境搭建
 
-- 操作系统：MacOS Big Sur，11.0.1
-- 集成开发工具：IntelliJ IDEA
-- 项目技术栈：SpringBoot 2.1.12.RELEASE + JDK 1.8.0_221 + Netty 4.1.42.Final
-- 项目依赖管理工具：Maven 3.5.4
 - 注册中心：Zookeeeper 3.4.14，需要特别注意 Zookeeeper 和 Apache Curator 一定要搭配使用，Zookeeper 3.4.x 版本，Apache Curator 只有 2.x.x 才能支持
 
 ## 项目测试
