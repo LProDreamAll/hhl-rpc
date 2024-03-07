@@ -53,7 +53,7 @@ public class RpcProvider implements BeanPostProcessor {
             try {
                 startRpcServer();
             } catch (Exception e) {
-                log.error("start rpc server error.", e);
+                log.error("start rpc server error:", e);
             }
         }).start();
     }
@@ -63,18 +63,12 @@ public class RpcProvider implements BeanPostProcessor {
         EventLoopGroup worker = new NioEventLoopGroup();
         try {
             ServerBootstrap bootstrap = new ServerBootstrap();
-            bootstrap.group(boss, worker)
-                    .channel(NioServerSocketChannel.class)
-                    .childHandler(new ChannelInitializer<SocketChannel>() {
-                        @Override
-                        protected void initChannel(SocketChannel socketChannel) throws Exception {
-                            socketChannel.pipeline()
-                                    .addLast(new HhlRpcEncoder())
-                                    .addLast(new HhlRpcDecoder())
-                                    .addLast(new HhlRequestHandler(rpcServiceMap));
-                        }
-                    })
-                    .childOption(ChannelOption.SO_KEEPALIVE, true);
+            bootstrap.group(boss, worker).channel(NioServerSocketChannel.class).childHandler(new ChannelInitializer<SocketChannel>() {
+                @Override
+                protected void initChannel(SocketChannel socketChannel) throws Exception {
+                    socketChannel.pipeline().addLast(new HhlRpcEncoder()).addLast(new HhlRpcDecoder()).addLast(new HhlRequestHandler(rpcServiceMap));
+                }
+            }).childOption(ChannelOption.SO_KEEPALIVE, true);
 
             ChannelFuture channelFuture = bootstrap.bind(rpcProperties.getRegistryAddr(), rpcProperties.getServicePort()).sync();
             log.info("server addr {} started on port {}", rpcProperties.getRegistryAddr(), rpcProperties.getServicePort());
@@ -87,15 +81,13 @@ public class RpcProvider implements BeanPostProcessor {
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+        log.info("bean name :{}", bean.getClass().getName());
         RpcService rpcService = bean.getClass().getAnnotation(RpcService.class);
         if (Objects.nonNull(rpcService)) {
-            ServiceMeta serviceMeta = ServiceMeta.builder().serviceAddr(rpcProperties.getRegistryAddr())
-                    .servicePort(rpcProperties.getServicePort()).serviceName(rpcService.serviceInterface().getName())
-                    .serviceVersion(rpcService.serviceVersion())
-                    .build();
+            ServiceMeta serviceMeta = ServiceMeta.builder().serviceAddr(rpcProperties.getRegistryAddr()).servicePort(rpcProperties.getServicePort()).serviceName(rpcService.serviceInterface().getName()).serviceVersion(rpcService.serviceVersion()).build();
             try {
                 serviceRegistry.register(serviceMeta);
-                rpcServiceMap.put(RpcServiceHelper.buildServiceKey(rpcService.serviceInterface().getName(),rpcService.serviceVersion()),bean);
+                rpcServiceMap.put(RpcServiceHelper.buildServiceKey(rpcService.serviceInterface().getName(), rpcService.serviceVersion()), bean);
             } catch (Exception e) {
                 log.error("failed to register service {}#{}", rpcService.serviceInterface().getName(), rpcService.serviceVersion(), e);
             }
