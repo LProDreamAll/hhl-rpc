@@ -5,7 +5,7 @@ import com.hhl.rpc.codec.HhlRpcEncoder;
 import com.hhl.rpc.common.RpcProperties;
 import com.hhl.rpc.common.RpcServiceHelper;
 import com.hhl.rpc.common.ServiceMeta;
-import com.hhl.rpc.handler.HhlRequestHandler;
+import com.hhl.rpc.handler.RpcRequestHandler;
 import com.hhl.rpc.provider.annotation.RpcService;
 import com.hhl.rpc.registry.RegistryFactory;
 import com.hhl.rpc.registry.RegistryService;
@@ -66,7 +66,7 @@ public class RpcProvider implements BeanPostProcessor {
             bootstrap.group(boss, worker).channel(NioServerSocketChannel.class).childHandler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 protected void initChannel(SocketChannel socketChannel) throws Exception {
-                    socketChannel.pipeline().addLast(new HhlRpcEncoder()).addLast(new HhlRpcDecoder()).addLast(new HhlRequestHandler(rpcServiceMap));
+                    socketChannel.pipeline().addLast(new HhlRpcEncoder()).addLast(new HhlRpcDecoder()).addLast(new RpcRequestHandler(rpcServiceMap));
                 }
             }).childOption(ChannelOption.SO_KEEPALIVE, true);
 
@@ -79,12 +79,14 @@ public class RpcProvider implements BeanPostProcessor {
         }
     }
 
+    //服务发布
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         log.info("bean name :{}", bean.getClass().getName());
         RpcService rpcService = bean.getClass().getAnnotation(RpcService.class);
         if (Objects.nonNull(rpcService)) {
-            ServiceMeta serviceMeta = ServiceMeta.builder().serviceAddr(rpcProperties.getRegistryAddr()).servicePort(rpcProperties.getServicePort()).serviceName(rpcService.serviceInterface().getName()).serviceVersion(rpcService.serviceVersion()).build();
+            ServiceMeta serviceMeta = ServiceMeta.builder().serviceAddr(rpcProperties.getRegistryAddr()).servicePort(rpcProperties.getServicePort())
+                    .serviceName(rpcService.serviceInterface().getName()).serviceVersion(rpcService.serviceVersion()).build();
             try {
                 serviceRegistry.register(serviceMeta);
                 rpcServiceMap.put(RpcServiceHelper.buildServiceKey(rpcService.serviceInterface().getName(), rpcService.serviceVersion()), bean);

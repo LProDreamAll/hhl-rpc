@@ -9,11 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Map;
 
 @Slf4j
-public class HhlRequestHandler extends SimpleChannelInboundHandler<HhlRpcProtocol<HhlRpcRequest>> {
+public class RpcRequestHandler extends SimpleChannelInboundHandler<HhlRpcProtocol<HhlRpcRequest>> {
 
     private final Map<String, Object> rpcServiceMap;
 
-    public HhlRequestHandler(Map<String, Object> rpcServiceMap) {
+    public RpcRequestHandler(Map<String, Object> rpcServiceMap) {
         this.rpcServiceMap = rpcServiceMap;
     }
 
