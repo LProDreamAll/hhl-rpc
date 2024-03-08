@@ -65,6 +65,9 @@ public interface ServiceLoadBalancer<T> {
 ## 环境搭建
 
 - 注册中心：Zookeeeper 3.4.14，需要特别注意 Zookeeeper 和 Apache Curator 一定要搭配使用，Zookeeper 3.4.x 版本，Apache Curator 只有 2.x.x 才能支持
+# docker 快速启动 zookeeeper
+
+# docker 快速启动 etcd 代码待开发
 
 ## 项目测试
 
@@ -73,6 +76,5 @@ public interface ServiceLoadBalancer<T> {
 - 启动 rpc-consumer 模块 RpcConsumerApplication
 - 测试：浏览器输入 http://localhost:8080/hello，成功返回 hello hhl rpc
 
-## 支持etcd
- todo 待开发
+
 
