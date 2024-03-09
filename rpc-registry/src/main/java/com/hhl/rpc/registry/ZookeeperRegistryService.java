@@ -26,11 +26,12 @@ public class ZookeeperRegistryService implements RegistryService {
     private final ServiceDiscovery<ServiceMeta> serviceDiscovery;
 
     public ZookeeperRegistryService(String registryAddr) throws Exception {
-        CuratorFramework curatorFramework = CuratorFrameworkFactory.newClient(registryAddr, new ExponentialBackoffRetry(BASE_SLEEP_TIME_MS, MAX_RETRIES));
-        curatorFramework.start();
+        CuratorFramework client = CuratorFrameworkFactory.newClient(registryAddr,
+                new ExponentialBackoffRetry(BASE_SLEEP_TIME_MS, MAX_RETRIES));
+        client.start();
         JsonInstanceSerializer<ServiceMeta> serializer = new JsonInstanceSerializer<>(ServiceMeta.class);
         this.serviceDiscovery = ServiceDiscoveryBuilder.builder(ServiceMeta.class)
-                .client(curatorFramework)
+                .client(client)
                 .serializer(serializer)
                 .basePath(ZK_BASE_PATH)
                 .build();

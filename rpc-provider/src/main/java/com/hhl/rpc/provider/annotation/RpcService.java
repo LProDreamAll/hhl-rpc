@@ -21,7 +21,7 @@ import java.lang.annotation.Target;
 //需要继承spring创建Bean的功能
 @Component
 public @interface RpcService {
-    String serviceVersion() default "1.0.0";
+    String serviceVersion() default "1.0";
 
     Class<?> serviceInterface() default Object.class;
 

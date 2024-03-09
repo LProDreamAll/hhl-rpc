@@ -2,6 +2,7 @@ package com.hhl.rpc.registry.loadbalancer;
 
 import com.hhl.rpc.common.ServiceMeta;
 import com.hhl.rpc.common.json.JSON;
+import com.hhl.rpc.common.utils.MurmurHashUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.x.discovery.ServiceInstance;
 
@@ -12,8 +13,10 @@ import java.util.TreeMap;
 /**
  *  一致性哈希算法
  *   原理：
- *   问题点：
- *     如何重新平衡节点
+ *     虚拟，获取最近的值
+ *  共享同一个
+ *  1-应当监听和初始化Hash ring
+ *  2-要加锁
  */
 @Slf4j
 public class ZKConsistentHashLoadBalancer implements ServiceLoadBalancer<ServiceInstance<ServiceMeta>>{
@@ -24,7 +27,7 @@ public class ZKConsistentHashLoadBalancer implements ServiceLoadBalancer<Service
     }
 
     private ServiceInstance<ServiceMeta> allocateNode(TreeMap<Integer, ServiceInstance<ServiceMeta>> ring, int hashCode) {
-            //获取不会小于 hashCode的key
+        //获取不会小于 hashCode的key
         Map.Entry<Integer, ServiceInstance<ServiceMeta>> entry = ring.ceilingEntry(hashCode);
         if (null == entry){
             entry = ring.firstEntry();
@@ -36,6 +39,7 @@ public class ZKConsistentHashLoadBalancer implements ServiceLoadBalancer<Service
         TreeMap<Integer, ServiceInstance<ServiceMeta>> ring = new TreeMap<>();
         for (ServiceInstance<ServiceMeta> instance : servers) {
             for (int i = 0; i < 10; i++) {
+//                ring.put(MurmurHashUtils.hash((buildServiceInstanceKey(instance) + "#" + i)), instance);
                 ring.put((buildServiceInstanceKey(instance) + "#" + i).hashCode(), instance);
             }
         }

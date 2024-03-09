@@ -9,7 +9,17 @@ public class RpcProperties {
 
     private int servicePort;
 
+    private String serviceHost;
+
+    private int registryPort;
+
+    private String registryHost;
+
     private String registryAddr;
 
     private String registryType;
+
+    public String getRegistryAddr() {
+        return String.join(":", this.registryHost, this.registryPort + "");
+    }
 }

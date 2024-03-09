@@ -32,9 +32,14 @@ public class RpcReferenceBean implements FactoryBean<Object> {
         return interfaceClass;
     }
 
+    /**
+     * init 方法何时被调用的
+     * @throws Exception
+     */
     public void init() throws Exception {
         RegistryService registryService = RegistryFactory.getInstance(this.registryAddr, RegistryType.valueOf(this.registryType));
-        this.object = Proxy.newProxyInstance(this.interfaceClass.getClassLoader(), new Class<?>[]{interfaceClass},
+        this.object = Proxy.newProxyInstance(this.interfaceClass.getClassLoader(),
+                new Class<?>[]{interfaceClass},
                 new RpcInvokerProxy(serviceVersion, timeout, registryService));
     }
 }

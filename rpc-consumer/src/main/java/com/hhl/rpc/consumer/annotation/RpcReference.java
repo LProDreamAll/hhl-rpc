@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Autowired
 public @interface RpcReference {
-    String version() default "1.0.0";
+    String serviceVersion() default "1.0";
 
     String registryType() default "ZOOKEEPER";
 

@@ -26,6 +26,7 @@ public class RpcConsumer {
     private final EventLoopGroup eventLoopGroup;
 
     public RpcConsumer() {
+        log.info("new RpcConsumer()");
         bootstrap = new Bootstrap();
         eventLoopGroup = new NioEventLoopGroup(4);
         bootstrap.group(eventLoopGroup).channel(NioSocketChannel.class)
@@ -58,6 +59,7 @@ public class RpcConsumer {
                     eventLoopGroup.shutdownGracefully();
                 }
             });
+            log.info("RpcConsumer sendRequest protocol hashcode:{}",protocol.hashCode());
             future.channel().writeAndFlush(protocol);
         }
     }

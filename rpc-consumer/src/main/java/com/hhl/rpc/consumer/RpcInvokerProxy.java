@@ -17,7 +17,9 @@ import java.util.concurrent.TimeUnit;
 import com.hhl.rpc.protocol.MsgHeader ;
 import io.netty.channel.DefaultEventLoop;
 import io.netty.util.concurrent.DefaultPromise;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class RpcInvokerProxy implements InvocationHandler {
 
     private final String serviceVersion;
@@ -48,7 +50,9 @@ public class RpcInvokerProxy implements InvocationHandler {
         request.setParameterTypes(method.getParameterTypes());
         request.setParams(args);
         protocol.setBody(request);
+
         RpcConsumer rpcConsumer = new RpcConsumer();
+        log.info("rpcConsumer hashcode :{}",rpcConsumer.hashCode());
         HhlRpcFuture<HhlRpcResponse> future = new HhlRpcFuture<>(new DefaultPromise<>(new DefaultEventLoop()), timeout);
         HhlRpcRequestHolder.REQUEST_MAP.put(requestId, future);
         rpcConsumer.sendRequest(protocol, this.registryService);
