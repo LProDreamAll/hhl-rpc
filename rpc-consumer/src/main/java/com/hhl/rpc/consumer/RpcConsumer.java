@@ -5,7 +5,6 @@ import com.hhl.rpc.codec.HhlRpcEncoder;
 import com.hhl.rpc.common.HhlRpcRequest;
 import com.hhl.rpc.common.RpcServiceHelper;
 import com.hhl.rpc.common.ServiceMeta;
-import com.hhl.rpc.common.json.JSON;
 import com.hhl.rpc.handler.RpcResponseHandler;
 import com.hhl.rpc.protocol.HhlRpcProtocol;
 import com.hhl.rpc.registry.RegistryService;
@@ -17,7 +16,6 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -45,9 +43,10 @@ public class RpcConsumer {
         HhlRpcRequest request = protocol.getBody();
         Object[] params = request.getParams();
         String serviceKey = RpcServiceHelper.buildServiceKey(request.getClassName(), request.getServiceVersion());
+
         int invokerHashCode = params.length > 0 ? params[0].hashCode() : serviceKey.hashCode();
         ServiceMeta serviceMetadata = registryService.discovery(serviceKey, invokerHashCode);
-        log.info("RpcConsumer serviceMetadata:{}", JSON.toJSONString(serviceMetadata));
+
         if (serviceMetadata != null) {
             ChannelFuture future = bootstrap.connect(serviceMetadata.getServiceAddr(), serviceMetadata.getServicePort()).sync();
             future.addListener((ChannelFutureListener) arg0 -> {
@@ -59,7 +58,6 @@ public class RpcConsumer {
                     eventLoopGroup.shutdownGracefully();
                 }
             });
-            log.info("RpcConsumer sendRequest protocol hashcode:{}",protocol.hashCode());
             future.channel().writeAndFlush(protocol);
         }
     }

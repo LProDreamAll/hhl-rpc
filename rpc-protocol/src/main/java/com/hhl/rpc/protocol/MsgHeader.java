@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 @Data
 public class MsgHeader implements Serializable {
-     /*
+    /*
     +---------------------------------------------------------------+
     | 魔数 2byte | 协议版本号 1byte | 序列化算法 1byte | 报文类型 1byte  |
     +---------------------------------------------------------------+

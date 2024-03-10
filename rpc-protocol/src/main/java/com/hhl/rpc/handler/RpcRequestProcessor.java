@@ -1,17 +1,21 @@
 package com.hhl.rpc.handler;
 
 
-import com.hhl.rpc.common.utils.ThreadUtils;
-
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
 
 public class RpcRequestProcessor {
+    private static ThreadPoolExecutor threadPoolExecutor;
+
     public static void submitRequest(Runnable task) {
-        CompletableFuture.runAsync(task, ThreadUtils.createWorkPool("RpcRequestProcessor",
-                10,10));
+        if (threadPoolExecutor == null) {
+            synchronized (RpcRequestProcessor.class) {
+                if (threadPoolExecutor == null) {
+                    threadPoolExecutor = new ThreadPoolExecutor(10, 10, 60L, TimeUnit.SECONDS, new ArrayBlockingQueue<>(10000));
+                }
+            }
+        }
+        threadPoolExecutor.submit(task);
     }
 }

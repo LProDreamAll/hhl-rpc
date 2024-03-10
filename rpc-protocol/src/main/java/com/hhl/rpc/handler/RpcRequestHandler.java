@@ -14,8 +14,6 @@ import org.springframework.cglib.reflect.FastClass;
 
 import java.util.Map;
 
-import static sun.misc.Signal.handle;
-
 @Slf4j
 public class RpcRequestHandler extends SimpleChannelInboundHandler<HhlRpcProtocol<HhlRpcRequest>> {
 
@@ -26,7 +24,7 @@ public class RpcRequestHandler extends SimpleChannelInboundHandler<HhlRpcProtoco
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, HhlRpcProtocol<HhlRpcRequest> protocol) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, HhlRpcProtocol<HhlRpcRequest> protocol) {
         RpcRequestProcessor.submitRequest(() -> {
             log.info("RpcRequestHandler channelRead0 protocol hashcode:{}",protocol.hashCode());
             HhlRpcProtocol<HhlRpcResponse> resProtocol = new HhlRpcProtocol<>();
@@ -36,6 +34,7 @@ public class RpcRequestHandler extends SimpleChannelInboundHandler<HhlRpcProtoco
             try {
                 Object result = handle(protocol.getBody());
                 response.setData(result);
+
                 header.setStatus((byte) MsgStatus.SUCCESS.getCode());
                 resProtocol.setHeader(header);
                 resProtocol.setBody(response);
@@ -47,9 +46,11 @@ public class RpcRequestHandler extends SimpleChannelInboundHandler<HhlRpcProtoco
             ctx.writeAndFlush(resProtocol);
         });
     }
+
     private Object handle(HhlRpcRequest request) throws Throwable {
         String serviceKey = RpcServiceHelper.buildServiceKey(request.getClassName(), request.getServiceVersion());
         Object serviceBean = rpcServiceMap.get(serviceKey);
+
         if (serviceBean == null) {
             throw new RuntimeException(String.format("service not exist: %s:%s", request.getClassName(), request.getMethodName()));
         }

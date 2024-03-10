@@ -14,11 +14,8 @@ import org.apache.curator.x.discovery.details.JsonInstanceSerializer;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 
 public class ZookeeperRegistryService implements RegistryService {
-
-    //缺省模式
     public static final int BASE_SLEEP_TIME_MS = 1000;
     public static final int MAX_RETRIES = 3;
     public static final String ZK_BASE_PATH = "/hhl_rpc";
@@ -26,8 +23,7 @@ public class ZookeeperRegistryService implements RegistryService {
     private final ServiceDiscovery<ServiceMeta> serviceDiscovery;
 
     public ZookeeperRegistryService(String registryAddr) throws Exception {
-        CuratorFramework client = CuratorFrameworkFactory.newClient(registryAddr,
-                new ExponentialBackoffRetry(BASE_SLEEP_TIME_MS, MAX_RETRIES));
+        CuratorFramework client = CuratorFrameworkFactory.newClient(registryAddr, new ExponentialBackoffRetry(BASE_SLEEP_TIME_MS, MAX_RETRIES));
         client.start();
         JsonInstanceSerializer<ServiceMeta> serializer = new JsonInstanceSerializer<>(ServiceMeta.class);
         this.serviceDiscovery = ServiceDiscoveryBuilder.builder(ServiceMeta.class)
@@ -66,7 +62,10 @@ public class ZookeeperRegistryService implements RegistryService {
     public ServiceMeta discovery(String serviceName, int invokerHashCode) throws Exception {
         Collection<ServiceInstance<ServiceMeta>> serviceInstances = serviceDiscovery.queryForInstances(serviceName);
         ServiceInstance<ServiceMeta> instance = new ZKConsistentHashLoadBalancer().select((List<ServiceInstance<ServiceMeta>>) serviceInstances, invokerHashCode);
-        return Objects.nonNull(instance) ? instance.getPayload() : null;
+        if (instance != null) {
+            return instance.getPayload();
+        }
+        return null;
     }
 
     @Override

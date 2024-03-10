@@ -1,6 +1,7 @@
 package com.hhl.rpc.registry;
 
 public class RegistryFactory {
+
     private static volatile RegistryService registryService;
 
     public static RegistryService getInstance(String registryAddr, RegistryType type) throws Exception {

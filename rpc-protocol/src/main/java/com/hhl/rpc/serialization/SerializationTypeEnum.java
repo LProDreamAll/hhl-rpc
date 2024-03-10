@@ -2,11 +2,11 @@ package com.hhl.rpc.serialization;
 
 import lombok.Getter;
 
-@Getter
 public enum SerializationTypeEnum {
     HESSIAN(0x10),
     JSON(0x20);
 
+    @Getter
     private final int type;
 
     SerializationTypeEnum(int type) {

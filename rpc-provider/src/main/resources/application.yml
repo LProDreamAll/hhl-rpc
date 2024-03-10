@@ -1,6 +1,0 @@
-rpc:
-  registry-type: ZOOKEEPER
-  registry-host: 127.0.0.1
-  registry-port: 2181
-  service-host: 127.0.0.1
-  service-port: 2888
