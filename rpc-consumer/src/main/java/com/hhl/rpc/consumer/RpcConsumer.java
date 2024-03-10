@@ -18,28 +18,14 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.annotation.PostConstruct;
+
 @Slf4j
 public class RpcConsumer {
-    private final Bootstrap bootstrap;
-    private final EventLoopGroup eventLoopGroup;
+    private static Bootstrap bootstrap;
+    private static EventLoopGroup eventLoopGroup;
 
-    public RpcConsumer() {
-        log.info("new RpcConsumer()");
-        bootstrap = new Bootstrap();
-        eventLoopGroup = new NioEventLoopGroup(4);
-        bootstrap.group(eventLoopGroup).channel(NioSocketChannel.class)
-                .handler(new ChannelInitializer<SocketChannel>() {
-                    @Override
-                    protected void initChannel(SocketChannel socketChannel) throws Exception {
-                        socketChannel.pipeline()
-                                .addLast(new HhlRpcEncoder())
-                                .addLast(new HhlRpcDecoder())
-                                .addLast(new RpcResponseHandler());
-                    }
-                });
-    }
-
-    public void sendRequest(HhlRpcProtocol<HhlRpcRequest> protocol, RegistryService registryService) throws Exception {
+    public static void sendRequest(HhlRpcProtocol<HhlRpcRequest> protocol, RegistryService registryService) throws Exception {
         HhlRpcRequest request = protocol.getBody();
         Object[] params = request.getParams();
         String serviceKey = RpcServiceHelper.buildServiceKey(request.getClassName(), request.getServiceVersion());
@@ -60,5 +46,32 @@ public class RpcConsumer {
             });
             future.channel().writeAndFlush(protocol);
         }
+    }
+
+    @PostConstruct
+    public void init() {
+        new Thread(() -> {
+            try {
+                log.info("startRpcConsumer");
+                startRpcConsumer();
+            } catch (Exception e) {
+                log.error("start rpc server error.", e);
+            }
+        }).start();
+    }
+
+    private void startRpcConsumer() {
+        bootstrap = new Bootstrap();
+        eventLoopGroup = new NioEventLoopGroup(4);
+        bootstrap.group(eventLoopGroup).channel(NioSocketChannel.class)
+                .handler(new ChannelInitializer<SocketChannel>() {
+                    @Override
+                    protected void initChannel(SocketChannel socketChannel) throws Exception {
+                        socketChannel.pipeline()
+                                .addLast(new HhlRpcEncoder())
+                                .addLast(new HhlRpcDecoder())
+                                .addLast(new RpcResponseHandler());
+                    }
+                });
     }
 }

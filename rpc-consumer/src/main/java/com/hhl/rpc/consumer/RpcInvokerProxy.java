@@ -51,11 +51,11 @@ public class RpcInvokerProxy implements InvocationHandler {
         request.setParams(args);
         protocol.setBody(request);
 
-        RpcConsumer rpcConsumer = new RpcConsumer();
-        log.info("rpcConsumer hashcode :{}",rpcConsumer.hashCode());
+//        RpcConsumer rpcConsumer = new RpcConsumer();
+//        log.info("rpcConsumer hashcode :{}",rpcConsumer.hashCode());
         HhlRpcFuture<HhlRpcResponse> future = new HhlRpcFuture<>(new DefaultPromise<>(new DefaultEventLoop()), timeout);
         HhlRpcRequestHolder.REQUEST_MAP.put(requestId, future);
-        rpcConsumer.sendRequest(protocol, this.registryService);
+        RpcConsumer.sendRequest(protocol, this.registryService);
 
         // TODO hold request by ThreadLocal
 
