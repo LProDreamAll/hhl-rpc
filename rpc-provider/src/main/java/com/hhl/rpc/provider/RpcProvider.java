@@ -81,6 +81,7 @@ public class RpcProvider implements  BeanPostProcessor {
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+        log.info("beanName:{}",beanName);
         RpcService rpcService = bean.getClass().getAnnotation(RpcService.class);
         if (rpcService != null) {
             String serviceName = rpcService.serviceInterface().getName();
