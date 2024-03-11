@@ -6,6 +6,11 @@ import com.hhl.rpc.provider.annotation.RpcService;
 public class HelloFacadeImpl implements HelloFacade {
     @Override
     public String hello(String name) {
-        return "hello" + name;
+        return "hello " + name;
+    }
+
+    @Override
+    public String test(String name) {
+        return "test " + name;
     }
 }

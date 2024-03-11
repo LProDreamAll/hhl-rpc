@@ -1,6 +1,5 @@
 package com.hhl.rpc.provider.facade;
 
-public interface HelloFacade {
-    String hello(String name);
+public interface TestFacade {
     String test(String name);
 }

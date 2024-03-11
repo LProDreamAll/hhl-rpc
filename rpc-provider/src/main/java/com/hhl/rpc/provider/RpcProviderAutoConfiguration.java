@@ -15,12 +15,8 @@ import javax.annotation.Resource;
 @EnableConfigurationProperties(RpcProperties.class)
 @Slf4j
 public class RpcProviderAutoConfiguration {
-
-    @Resource
-    private RpcProperties rpcProperties;
-
     @Bean
-    public RpcProvider init() throws Exception {
+    public RpcProvider init(RpcProperties rpcProperties) throws Exception {
         RegistryType type = RegistryType.valueOf(rpcProperties.getRegistryType());
         RegistryService serviceRegistry = RegistryFactory.getInstance(rpcProperties.getRegistryAddr(), type);
         log.info("serviceRegistry hashcode :{}",serviceRegistry.hashCode());
